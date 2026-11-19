@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bedekar Class BCA — Fee Payment Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
+      color: #ffffff;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb-1 {
+      width: 320px;
+      height: 320px;
+      background: #38bdf8;
+      top: 10%;
+      left: 15%;
+      opacity: 0.45;
+    }
+    .orb-2 {
+      width: 350px;
+      height: 350px;
+      background: #818cf8;
+      bottom: 10%;
+      right: 15%;
+      opacity: 0.45;
+    }
+
+    .glass-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7dd3fc;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-top: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 8px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    input:focus, select:focus {
+      border-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    select option {
+      background: #1e293b;
+      color: #ffffff;
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-verify {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      white-space: nowrap;
+    }
+
+    .btn-verify:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #38bdf8, #3b82f6);
+      color: #0f172a;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 8px;
+      box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px -5px rgba(56, 189, 248, 0.55);
+    }
+
+    .student-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .student-box.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13.5px;
+      padding: 5px 0;
+    }
+
+    .info-line span:first-child {
+      color: rgba(255, 255, 255, 0.65);
+      white-space: nowrap;
+    }
+
+    .info-line span:last-child {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .error-msg {
+      color: #fca5a5;
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .demo-hint {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-top: 6px;
+    }
+
+    /* Static QR Box */
+    .upi-box {
+      display: none;
+      background: rgba(15, 23, 42, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 16px;
+      padding: 20px;
+      margin-top: 16px;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .upi-box.active {
+      display: block;
+    }
+
+    .amount-highlight {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.18);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .qr-wrapper {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 16px;
+      display: inline-block;
+      margin: 8px 0 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .qr-wrapper img {
+      display: block;
+      width: 210px;
+      height: 210px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .note-reminder {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
+
+    /* Receipt View */
+    .receipt-view {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .check-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #4ade80;
+      color: #4ade80;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+    }
+
+    .receipt-details {
+      text-align: left;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 18px 0;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .fee-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+      font-weight: 700;
+      padding-top: 8px;
+      margin-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      color: #7dd3fc;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media print {
+      body { background: #ffffff; color: #000000; }
+      .orb, .btn-group { display: none !important; }
+      .glass-card {
+        background: #ffffff;
+        border: 1px solid #cccccc;
+        box-shadow: none;
+        color: #000000;
+      }
+      .info-line span:first-child, .header p { color: #555555; }
+      .badge { border: 1px solid #000000; color: #000000; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <div class="glass-card">
+    <div class="header">
+      <span class="badge">2026–2027 • ANNUAL FEE: ₹40,000</span>
+      <h1>Bedekar Class BCA</h1>
+      <p>FYBCA (AICTE) UPI Fee Portal</p>
+    </div>
+
+    <!-- Main Payment Form -->
+    <div id="paymentForm">
+      <div class="form-group">
+        <label for="pnrInput">Student PNR / Student ID</label>
+        <div class="input-row">
+          <input type="text" id="pnrInput" placeholder="e.g. 2603140001" autocomplete="off" />
+          <button type="button" class="btn btn-verify" onclick="verifyPNR()">Verify</button>
+        </div>
+        <div class="demo-hint">Enter your 10-digit Student ID (2603140001 – 2603140066)</div>
+        <div id="errorMsg" class="error-msg">Invalid PNR / Student ID. Please check and try again.</div>
+      </div>
+
+      <!-- Verified Student Details -->
+      <div id="studentBox" class="student-box">
+        <div class="info-line">
+          <span>Student Name</span>
+          <span id="stuName">—</span>
+        </div>
+        <div class="info-line">
+          <span>Level & Year</span>
+          <span>FYBCA (AICTE) • 2026–2027</span>
+        </div>
+        <div class="info-line">
+          <span>ABC ID</span>
+          <span id="stuAbc">—</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="installmentSelect">Select Fee Amount</label>
+        <select id="installmentSelect" onchange="updateAmountDisplay()">
+          <option value="40000">Full Annual Fee — ₹40,000</option>
+          <option value="20000">Installment 1 (Semester I) — ₹20,000</option>
+          <option value="20000">Installment 2 (Semester II) — ₹20,000</option>
+        </select>
+      </div>
+
+      <!-- Static UPI QR Code Box -->
+      <div id="upiBox" class="upi-box">
+        <div class="amount-highlight" id="payAmountLabel">Payable Amount: ₹40,000</div>
+
+        <div style="font-size: 13px; color: rgba(255,255,255,0.8);">
+          Scan QR with GPay, PhonePe, Paytm or any UPI App
+        </div>
+
+        <div class="qr-wrapper">
+          <img id="staticQrImg" src="qr.jpeg" alt="Bedekar Class BCA UPI QR Code" />
+        </div>
+
+        <div class="note-reminder">
+          Please enter <strong id="notePnrText">PNR</strong> in the UPI payment note before paying.
+        </div>
+
+        <div class="form-group" style="text-align: left; margin-bottom: 10px;">
+          <label for="utrInput">Enter 12-Digit UPI Transaction / UTR ID after paying</label>
+          <input type="text" id="utrInput" maxlength="12" placeholder="e.g. 632418905412" />
+          <div id="utrError" class="error-msg">Please enter a valid 12-digit UPI UTR / Reference number.</div>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="confirmPayment()">
+          Submit & Generate Receipt
+        </button>
+      </div>
+    </div>
+
+    <!-- Digital Receipt View -->
+    <div id="receiptView" class="receipt-view">
+      <div class="check-circle">✓</div>
+      <h2>Fee Receipt Generated</h2>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px;">
+        Subject to UPI UTR verification by Bedekar Class BCA.
+      </p>
+
+      <div class="receipt-details">
+        <div class="info-line">
+          <span>Receipt No.</span>
+          <span id="recId">—</span>
+        </div>
+        <div class="info-line">
+          <span>Date</span>
+          <span id="recDate">—</span>
+        </div>
+        <div class="info-line">
+          <span>Student Name</span>
+          <span id="recName">—</span>
+        </div>
+        <div class="info-line">
+          <span>PNR / Student ID</span>
+          <span id="recPnr">—</span>
+        </div>
+        <div class="info-line">
+          <span>ABC ID</span>
+          <span id="recAbc">—</span>
+        </div>
+        <div class="info-line">
+          <span>Level & Year</span>
+          <span>FYBCA (AICTE) • 2026–2027</span>
+        </div>
+        <div class="info-line">
+          <span>UPI UTR / Ref No.</span>
+          <span id="recUtr">—</span>
+        </div>
+        <div class="fee-total">
+          <span>Amount Paid</span>
+          <span id="recAmount">—</span>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-verify" style="flex:1" onclick="window.print()">Print Receipt</button>
+        <button type="button" class="btn btn-primary" style="flex:1; margin-top:0" onclick="resetPortal()">New Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // SET YOUR QR IMAGE FILENAME HERE
+    // ==========================================
+    const QR_IMAGE_FILE = "qr.jpeg";
+    document.getElementById("staticQrImg").src = QR_IMAGE_FILE;
+
+    // Complete FYBCA (AICTE) 2026-2027 Student Database
+    const studentsDB = {
+      "2603140001": { name: "JADHAV ISHWARI NIVAS ANUPAMA", abc: "834595851129" },
+      "2603140002": { name: "KHAN AAFAQ NASIR HUSSAIN ERUM", abc: "279831744524" },
+      "2603140003": { name: "GAVARE SOHAM SANJAY KAVITA", abc: "793580683149" },
+      "2603140004": { name: "NADAR ANGEL DHINA JYOTI", abc: "817269992508" },
+      "2603140005": { name: "NEHETE KRUPA DIPAK MOHINI", abc: "769793430202" },
+      "2603140006": { name: "KULKARNI MITESH CHANDRASHEKHAR RITIKA", abc: "937690637300" },
+      "2603140007": { name: "KAMBLE SHREYASH GANESH KAUSHALYA", abc: "767351437966" },
+      "2603140008": { name: "SATPUTE SWANANDI VIJAY KAVITA", abc: "591242966517" },
+      "2603140009": { name: "GHODKE SUMIT DHANAJI VANDANA", abc: "755106600585" },
+      "2603140010": { name: "SURVE SARTHAK CHANDRAKANT SUJATA", abc: "236113049020" },
+      "2603140011": { name: "JAGTAP YASH PRADIP DIPALI", abc: "433793400082" },
+      "2603140012": { name: "DUBEY RASHI RAVINDRA MEENAKSHI", abc: "592544425763" },
+      "2603140013": { name: "BAGADI PRIYASH SUNIL VIDYA", abc: "373424766033" },
+      "2603140014": { name: "MISHRA SHRISTI AJAYKUMAR SEEMA", abc: "504467771099" },
+      "2603140015": { name: "SHELKE SARTHAK ANIL AMITA", abc: "411734538959" },
+      "2603140016": { name: "MEHERRAO RASHTRAJYOTI SUNIL ARATI", abc: "352941379632" },
+      "2603140017": { name: "VAISHYA VARSHA MOTILAL SONI", abc: "326448238890" },
+      "2603140018": { name: "RAKH OMKAR AMBADAS SUNITA", abc: "539544730956" },
+      "2603140019": { name: "ATHAVALE KUNAL UDAY NILAM", abc: "233917745451" },
+      "2603140020": { name: "PARTE DAKSH ANANDA SAVITA", abc: "485024638779" },
+      "2603140021": { name: "MAYEKAR SHREYAS SHIVRAJ SHIVANI", abc: "202153073397" },
+      "2603140022": { name: "KARAD ADITYA SUDHAKAR DNYANESHWARI", abc: "881053515711" },
+      "2603140023": { name: "ANGRE SAHIL RAJESH KAVITA", abc: "120075543233" },
+      "2603140024": { name: "KHANDAGALE PIYUSH PRAKASH SUVARNA", abc: "937992908610" },
+      "2603140025": { name: "PARAB PARNIKA DAYANAND DIKSHA", abc: "289130410927" },
+      "2603140026": { name: "KADAM KAIVALYA GAJANAN ANJALI", abc: "335423605039" },
+      "2603140027": { name: "THAKUR KRISHNA LAXMAN MUNCHUN", abc: "976500400929" },
+      "2603140028": { name: "JETHWA HARSHAD LAVJI MANISHA", abc: "665978237279" },
+      "2603140029": { name: "PAWAR SITANSH SUNIL SWAPNALI", abc: "211425431992" },
+      "2603140030": { name: "MHATRE YASH NAVNATH RASIKA", abc: "449784157979" },
+      "2603140031": { name: "BIRDANKAR VIGHANESH SURESH VITTHAL SUPRIYA", abc: "904984675138" },
+      "2603140032": { name: "SHAIKH SHARIK NADEEM NOOR JAHAN", abc: "843707211247" },
+      "2603140033": { name: "JADHAV ANUSHKA AMIT AMRAPALI", abc: "699800168619" },
+      "2603140034": { name: "KARANDE CHAITANYA UMESH ASMITA", abc: "473455883373" },
+      "2603140035": { name: "SHAIKH FARHAN KAYYUM HAJRA", abc: "177869749363" },
+      "2603140036": { name: "RATHOD VAIBHAV VIJAY SAVITA", abc: "359897926747" },
+      "2603140037": { name: "JOSHI PRATHAM TUSHAR UMA", abc: "652541474655" },
+      "2603140038": { name: "PATEL MOHD YUSUF RAZI TAZKEEN", abc: "136586880526" },
+      "2603140039": { name: "SHAIKH TABISH ISRAR AFSHANA", abc: "649779741395" },
+      "2603140040": { name: "GHADGE PARTH MANGESH ARCHANA", abc: "121056197924" },
+      "2603140041": { name: "SHAIKH ARMAN AMAR HALIMA", abc: "811940895265" },
+      "2603140042": { name: "JADHAV SANSKAR SUBODH SIYA", abc: "427512472848" },
+      "2603140043": { name: "ASMALLU KSHITIJA RUPESH PRIYANKA", abc: "950508195608" },
+      "2603140044": { name: "SAKPAL SHREYA DEVIDAS DIXITA", abc: "588141778509" },
+      "2603140045": { name: "ZATE PRANAY SUNIL SHRUTI", abc: "463243944191" },
+      "2603140047": { name: "PAWAR DRUSHTI DEEPAK JYOTI", abc: "722349389975" },
+      "2603140048": { name: "YADAV AMAN SHATRUGHAN YADAV REKHAA", abc: "228942662048" },
+      "2603140049": { name: "KEDARE DHANESH PRAVIN NAYNA", abc: "839904633473" },
+      "2603140050": { name: "GUPTA AYUSH RAJESH AARTI", abc: "278150846711" },
+      "2603140051": { name: "POTE VEDANT RAJESH VAISHALI", abc: "208281200565" },
+      "2603140052": { name: "SAPKALE ROHAN GAUTAM UJWALA", abc: "708242047761" },
+      "2603140053": { name: "CHAUHAN VIVEK INDRAJIT NIRMALA", abc: "917594596805" },
+      "2603140055": { name: "SHAIKH NOMAN UVES AHMED ANJUM SAHER", abc: "300278373008" },
+      "2603140056": { name: "MANJARE ISHANT DEEPAK PUJA", abc: "557306306400" },
+      "2603140058": { name: "RAI BHAVNA DINESH AMITA", abc: "959956369837" },
+      "2603140059": { name: "SHIRSAT SUJAL SUNIL VAISHALI", abc: "424593982514" },
+      "2603140060": { name: "PATIL PRAGATI DAGADU YOGITA", abc: "915341514564" },
+      "2603140061": { name: "SHAIKH MOHAMMED SAAD NISAR HAKIKULLAH NAZMA", abc: "882431543064" },
+      "2603140062": { name: "KAMBLE PRITI ROHIDAS SAVITA", abc: "732991079739" },
+      "2603140063": { name: "RATHOD SUJAL RAJENDRA SAVITA", abc: "281945080352" },
+      "2603140064": { name: "KHAVNEKAR ISHITA CHANDRASHEKHAR SMITA", abc: "471428944061" },
+      "2603140065": { name: "UTEKAR SAHIL SANTOSH SONAL", abc: "570409526272" },
+      "2603140066": { name: "SALUNKE PARTH VIJAY SHUBHANGU", abc: "856794947974" }
+    };
+
+    let currentStudent = null;
+    let currentPNR = "";
+
+    document.getElementById("pnrInput").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") verifyPNR();
+    });
+
+    function verifyPNR() {
+      const input = document.getElementById("pnrInput").value.trim();
+      const studentBox = document.getElementById("studentBox");
+      const upiBox = document.getElementById("upiBox");
+      const errorMsg = document.getElementById("errorMsg");
+
+      if (studentsDB[input]) {
+        currentStudent = studentsDB[input];
+        currentPNR = input;
+
+        document.getElementById("stuName").textContent = currentStudent.name;
+        document.getElementById("stuAbc").textContent = currentStudent.abc;
+        document.getElementById("notePnrText").textContent = currentPNR;
+
+        studentBox.classList.add("active");
+        upiBox.classList.add("active");
+        errorMsg.style.display = "none";
+        updateAmountDisplay();
+      } else {
+        currentStudent = null;
+        currentPNR = "";
+        studentBox.classList.remove("active");
+        upiBox.classList.remove("active");
+        errorMsg.style.display = "block";
+      }
+    }
+
+    function updateAmountDisplay() {
+      const amount = Number(document.getElementById("installmentSelect").value);
+      const formatted = "₹" + amount.toLocaleString("en-IN");
+      document.getElementById("payAmountLabel").textContent = `Payable Amount: ${formatted}`;
+    }
+
+    function confirmPayment() {
+      if (!currentStudent) return;
+
+      const utr = document.getElementById("utrInput").value.trim();
+      const utrError = document.getElementById("utrError");
+
+      if (!/^\d{12}$/.test(utr)) {
+        utrError.style.display = "block";
+        return;
+      }
+      utrError.style.display = "none";
+
+      const amount = Number(document.getElementById("installmentSelect").value);
+      const formatted = "₹" + amount.toLocaleString("en-IN");
+      const receiptNumber = "BCB-" + Math.floor(100000 + Math.random() * 900000);
+      const today = new Date().toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+      });
+
+      document.getElementById("recId").textContent = receiptNumber;
+      document.getElementById("recDate").textContent = today;
+      document.getElementById("recName").textContent = currentStudent.name;
+      document.getElementById("recPnr").textContent = currentPNR;
+      document.getElementById("recAbc").textContent = currentStudent.abc;
+      document.getElementById("recUtr").textContent = utr;
+      document.getElementById("recAmount").textContent = formatted;
+
+      document.getElementById("paymentForm").style.display = "none";
+      document.getElementById("receiptView").style.display = "block";
+    }
+
+    function resetPortal() {
+      currentStudent = null;
+      currentPNR = "";
+      document.getElementById("pnrInput").value = "";
+      document.getElementById("utrInput").value = "";
+      document.getElementById("studentBox").classList.remove("active");
+      document.getElementById("upiBox").classList.remove("active");
+      document.getElementById("installmentSelect").selectedIndex = 0;
+
+      document.getElementById("receiptView").style.display = "none";
+      document.getElementById("paymentForm").style.display = "block";
+    }
+  </script>
+</body>
+</html>
